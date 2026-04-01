@@ -1,0 +1,47 @@
+.home-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 20px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.home-container h1 {
+  font-size: 3rem;
+  margin-bottom: 2rem;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.status-card {
+  background: white;
+  color: #333;
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+  min-width: 300px;
+  text-align: center;
+}
+
+.status-card h2 {
+  margin-bottom: 1rem;
+  color: #667eea;
+}
+
+.status-card p {
+  font-size: 1.1rem;
+  margin: 1rem 0;
+}
+
+.success {
+  color: #10b981;
+  font-weight: bold;
+}
+
+.error {
+  color: #ef4444;
+  font-weight: bold;
+}

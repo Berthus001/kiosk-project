@@ -1,0 +1,12 @@
+/* Admin Page Styles */
+.admin-page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background: #f8f9fa;
+}
+
+.admin-main {
+  flex: 1;
+  padding: 0;
+}
