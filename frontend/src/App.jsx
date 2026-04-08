@@ -3,7 +3,8 @@ import { useContext } from 'react';
 import { AuthProvider } from './context/AuthContext';
 import { CartProvider } from './context/CartContext';
 import { AuthContext } from './context/AuthContext';
-import Home from './pages/Home';
+import LandingPage from './pages/LandingPage';
+import MenuPage from './pages/MenuPage';
 import Login from './components/Login';
 import Signup from './components/Signup';
 import KioskPage from './pages/KioskPage';
@@ -17,8 +18,11 @@ function App() {
       <AuthProvider>
         <CartProvider>
           <Routes>
-            {/* Landing page - public access */}
-            <Route path="/" element={<Home />} />
+            {/* Landing page - public access, no products */}
+            <Route path="/" element={<LandingPage />} />
+
+            {/* Menu page - public access, fetches products from backend API */}
+            <Route path="/menu" element={<MenuPage />} />
 
             {/* Login route */}
             <Route path="/login" element={<Login />} />

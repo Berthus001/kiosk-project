@@ -8,7 +8,7 @@ const ProductCard = ({ product, isPlaceholder, onAddToCart }) => {
 
   const handleAddToCart = () => {
     if (product && product.id) {
-      // If onAddToCart callback is provided (from landing page), use it
+      // If onAddToCart callback is provided (from MenuPage or landing), use it
       if (onAddToCart) {
         onAddToCart(product);
       } else {
@@ -60,8 +60,8 @@ const ProductCard = ({ product, isPlaceholder, onAddToCart }) => {
       </div>
 
       <div className="product-details">
-        <h3 className="product-title">{product.title}</h3>
-        <p className="product-price">${product.price?.toFixed(2) || '0.00'}</p>
+        <h3 className="product-title">{product.title || product.name}</h3>
+        <p className="product-price">${(product.price || 0).toFixed(2)}</p>
         <button
           onClick={handleAddToCart}
           className={`add-to-cart-btn ${addedFeedback ? 'added' : ''}`}
