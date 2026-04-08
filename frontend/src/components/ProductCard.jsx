@@ -2,17 +2,23 @@ import React, { useContext, useState } from 'react';
 import { CartContext } from '../context/CartContext';
 import '../styles/productCard.css';
 
-const ProductCard = ({ product, isPlaceholder }) => {
+const ProductCard = ({ product, isPlaceholder, onAddToCart }) => {
   const { addToCart } = useContext(CartContext);
   const [addedFeedback, setAddedFeedback] = useState(false);
 
   const handleAddToCart = () => {
     if (product && product.id) {
-      addToCart(product);
-      
-      // Show visual feedback
-      setAddedFeedback(true);
-      setTimeout(() => setAddedFeedback(false), 1500);
+      // If onAddToCart callback is provided (from landing page), use it
+      if (onAddToCart) {
+        onAddToCart(product);
+      } else {
+        // Otherwise, add directly to cart (kiosk page behavior)
+        addToCart(product);
+        
+        // Show visual feedback
+        setAddedFeedback(true);
+        setTimeout(() => setAddedFeedback(false), 1500);
+      }
     }
   };
 

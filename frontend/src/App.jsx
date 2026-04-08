@@ -1,6 +1,9 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { useContext } from 'react';
 import { AuthProvider } from './context/AuthContext';
 import { CartProvider } from './context/CartContext';
+import { AuthContext } from './context/AuthContext';
+import Home from './pages/Home';
 import Login from './components/Login';
 import Signup from './components/Signup';
 import KioskPage from './pages/KioskPage';
@@ -14,8 +17,8 @@ function App() {
       <AuthProvider>
         <CartProvider>
           <Routes>
-            {/* Default route redirects to dashboard */}
-            <Route path="/" element={<Navigate to="/dashboard" replace />} />
+            {/* Landing page - public access */}
+            <Route path="/" element={<Home />} />
 
             {/* Login route */}
             <Route path="/login" element={<Login />} />
@@ -35,7 +38,7 @@ function App() {
               }
             />
 
-            {/* User/Kiosk page */}
+            {/* User/Kiosk page - authenticated users only */}
             <Route
               path="/kiosk"
               element={
@@ -58,7 +61,7 @@ function App() {
             />
 
             {/* Catch-all for undefined routes */}
-            <Route path="*" element={<Navigate to="/dashboard" replace />} />
+            <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </CartProvider>
       </AuthProvider>
@@ -84,9 +87,6 @@ function RoleBasedDashboard() {
  * CheckROleAndRoute Component
  * Actual role checking component
  */
-import { useContext } from 'react';
-import { AuthContext } from './context/AuthContext';
-
 function CheckROleAndRoute() {
   const { user } = useContext(AuthContext);
 
