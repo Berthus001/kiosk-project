@@ -1,57 +1,19 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import ProductCard from './ProductCard';
 import '../styles/productGrid.css';
 
-const ProductGrid = () => {
-  const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+const ProductGrid = ({ category }) => {
+  // When backend is ready, fetch products by category
+  // For now, show empty state immediately - no placeholders
+  const products = []; // Will be populated from backend
+  const isLoading = false; // Will be true when actively fetching
 
-  // Fetch products from FakeStore API
-  useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        setLoading(true);
-        const response = await fetch('https://fakestoreapi.com/products');
-
-        if (!response.ok) {
-          throw new Error('Failed to fetch products');
-        }
-
-        const data = await response.json();
-        setProducts(data);
-        setError(null);
-      } catch (err) {
-        setError(err.message);
-        console.error('Error fetching products:', err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchProducts();
-  }, []);
-
-  if (loading) {
+  // No loading state shown - empty state displayed immediately
+  if (products.length === 0) {
     return (
       <div className="product-grid-container">
-        <div className="loading">
-          <h2>Loading Products...</h2>
-          <div className="spinner"></div>
-        </div>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="product-grid-container">
-        <div className="error">
-          <h2>❌ Error Loading Products</h2>
-          <p>{error}</p>
-          <button onClick={() => window.location.reload()}>
-            Try Again
-          </button>
+        <div className="empty-state">
+          <p>No products available</p>
         </div>
       </div>
     );
@@ -59,15 +21,10 @@ const ProductGrid = () => {
 
   return (
     <div className="product-grid-container">
-      <h2 className="products-title">📦 Available Products</h2>
       <div className="products-grid">
-        {products && products.length > 0 ? (
-          products.map((product) => (
-            <ProductCard key={product.id} product={product} />
-          ))
-        ) : (
-          <p>No products available</p>
-        )}
+        {products.map((product) => (
+          <ProductCard key={product.id} product={product} isPlaceholder={false} />
+        ))}
       </div>
     </div>
   );

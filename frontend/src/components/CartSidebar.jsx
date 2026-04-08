@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { CartContext } from '../context/CartContext';
 import CartItem from './CartItem';
 import '../styles/cartSidebar.css';
@@ -8,15 +8,39 @@ const CartSidebar = ({ isOpen, onClose }) => {
     cartItems,
     calculateTotal,
     clearCart,
-    checkout
+    submitCheckout
   } = useContext(CartContext);
+
+  const [checkoutLoading, setCheckoutLoading] = useState(false);
+  const [checkoutError, setCheckoutError] = useState('');
+  const [checkoutSuccess, setCheckoutSuccess] = useState(false);
 
   const total = calculateTotal();
   const itemCount = cartItems.length;
 
-  const handleCheckout = () => {
-    checkout();
-    onClose();
+  const handleCheckout = async () => {
+    if (cartItems.length === 0) return;
+
+    setCheckoutLoading(true);
+    setCheckoutError('');
+    setCheckoutSuccess(false);
+
+    try {
+      await submitCheckout('/api/orders');
+      setCheckoutSuccess(true);
+      
+      // Show success message for 2 seconds then close sidebar
+      setTimeout(() => {
+        setCheckoutSuccess(false);
+        onClose();
+      }, 2000);
+    } catch (error) {
+      console.error('Checkout failed:', error);
+      setCheckoutError(
+        error.message || 'Checkout failed. Please try again.'
+      );
+      setCheckoutLoading(false);
+    }
   };
 
   return (
@@ -36,7 +60,20 @@ const CartSidebar = ({ isOpen, onClose }) => {
         </div>
 
         <div className="cart-body">
-          {cartItems.length === 0 ? (
+          {checkoutSuccess && (
+            <div className="checkout-success">
+              <div className="success-icon">✓</div>
+              <p>Order placed successfully!</p>
+            </div>
+          )}
+
+          {checkoutError && (
+            <div className="checkout-error">
+              <p>{checkoutError}</p>
+            </div>
+          )}
+
+          {cartItems.length === 0 && !checkoutSuccess ? (
             <div className="empty-cart">
               <p>Your cart is empty</p>
               <span>Start shopping to add items</span>
@@ -50,7 +87,7 @@ const CartSidebar = ({ isOpen, onClose }) => {
           )}
         </div>
 
-        {cartItems.length > 0 && (
+        {cartItems.length > 0 && !checkoutSuccess && (
           <div className="cart-footer">
             <div className="cart-summary">
               <div className="summary-row">
@@ -64,10 +101,18 @@ const CartSidebar = ({ isOpen, onClose }) => {
             </div>
 
             <div className="cart-actions">
-              <button onClick={handleCheckout} className="checkout-btn">
-                ✓ Checkout
+              <button
+                onClick={handleCheckout}
+                className="checkout-btn"
+                disabled={checkoutLoading || cartItems.length === 0}
+              >
+                {checkoutLoading ? '⏳ Processing...' : '✓ Checkout'}
               </button>
-              <button onClick={clearCart} className="clear-cart-btn">
+              <button
+                onClick={clearCart}
+                className="clear-cart-btn"
+                disabled={checkoutLoading}
+              >
                 Clear Cart
               </button>
             </div>

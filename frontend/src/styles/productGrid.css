@@ -95,6 +95,13 @@
   transform: translateY(-2px);
 }
 
+.empty-state {
+  text-align: center;
+  padding: 40px 20px;
+  color: #999;
+  font-size: 18px;
+}
+
 /* Responsive for tablets and smaller */
 @media (max-width: 768px) {
   .product-grid-container {

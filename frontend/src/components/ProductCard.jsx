@@ -1,41 +1,67 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { CartContext } from '../context/CartContext';
 import '../styles/productCard.css';
 
-const ProductCard = ({ product }) => {
+const ProductCard = ({ product, isPlaceholder }) => {
   const { addToCart } = useContext(CartContext);
+  const [addedFeedback, setAddedFeedback] = useState(false);
 
   const handleAddToCart = () => {
-    addToCart(product);
-    // Visual feedback
-    alert(`${product.title} added to cart!`);
+    if (product && product.id) {
+      addToCart(product);
+      
+      // Show visual feedback
+      setAddedFeedback(true);
+      setTimeout(() => setAddedFeedback(false), 1500);
+    }
   };
 
+  if (isPlaceholder) {
+    return (
+      <div className="product-card placeholder">
+        <div className="product-image-wrapper placeholder">
+          <div className="placeholder-image" />
+        </div>
+
+        <div className="product-details">
+          <h3 className="product-title placeholder" />
+          <p className="product-price placeholder" />
+          <button
+            disabled
+            className="add-to-cart-btn disabled"
+            title="Awaiting products"
+          >
+            Add to Cart
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  // This branch handles real product data once backend is connected
   return (
     <div className="product-card">
       <div className="product-image-wrapper">
-        <img
-          src={product.image}
-          alt={product.title}
-          className="product-image"
-        />
+        {product.image ? (
+          <img
+            src={product.image}
+            alt={product.title}
+            className="product-image"
+          />
+        ) : (
+          <div className="product-no-image">No Image</div>
+        )}
       </div>
 
       <div className="product-details">
         <h3 className="product-title">{product.title}</h3>
-
-        <p className="product-description">{product.description}</p>
-
-        <div className="product-price">
-          Price: <span className="price-amount">${product.price}</span>
-        </div>
-
+        <p className="product-price">${product.price?.toFixed(2) || '0.00'}</p>
         <button
           onClick={handleAddToCart}
-          className="add-to-cart-btn"
+          className={`add-to-cart-btn ${addedFeedback ? 'added' : ''}`}
           title="Add to cart"
         >
-          🛒 Add to Cart
+          {addedFeedback ? '✓ Added!' : '🛒 Add to Cart'}
         </button>
       </div>
     </div>

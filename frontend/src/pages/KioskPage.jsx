@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import Navbar from '../components/Navbar';
+import CategoryBar from '../components/CategoryBar';
 import ProductGrid from '../components/ProductGrid';
 import CartSidebar from '../components/CartSidebar';
 import '../styles/kioskPage.css';
 
 const KioskPage = () => {
   const [isCartOpen, setIsCartOpen] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState(null);
 
   const toggleCart = () => {
     setIsCartOpen(!isCartOpen);
@@ -13,10 +15,19 @@ const KioskPage = () => {
 
   return (
     <div className="kiosk-page">
-      <Navbar />
+      <Navbar onCartClick={toggleCart} />
+
+      <div className="kiosk-header">
+        <h1>Menu</h1>
+      </div>
+
+      <CategoryBar 
+        selectedCategory={selectedCategory} 
+        onSelectCategory={setSelectedCategory} 
+      />
 
       <div className="kiosk-main">
-        <ProductGrid />
+        <ProductGrid category={selectedCategory} />
       </div>
 
       {/* Floating Cart Button */}

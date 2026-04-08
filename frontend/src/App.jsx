@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { AuthProvider } from './context/AuthContext';
 import { CartProvider } from './context/CartContext';
 import Login from './components/Login';
+import Signup from './components/Signup';
 import KioskPage from './pages/KioskPage';
 import AdminPage from './pages/AdminPage';
 import ProtectedRoute from './components/ProtectedRoute';
@@ -18,6 +19,9 @@ function App() {
 
             {/* Login route */}
             <Route path="/login" element={<Login />} />
+
+            {/* Signup route */}
+            <Route path="/signup" element={<Signup />} />
 
             {/* Dashboard - routes to different pages based on role */}
             <Route

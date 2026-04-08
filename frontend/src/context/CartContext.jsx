@@ -1,31 +1,10 @@
-import React, { createContext, useState, useEffect } from 'react';
+import React, { createContext, useState } from 'react';
 
 // Create cart context
 export const CartContext = createContext();
 
 export const CartProvider = ({ children }) => {
   const [cartItems, setCartItems] = useState([]);
-  const [loading, setLoading] = useState(true);
-
-  // Restore cart from localStorage on mount
-  useEffect(() => {
-    const storedCart = localStorage.getItem('cart');
-    if (storedCart) {
-      try {
-        setCartItems(JSON.parse(storedCart));
-      } catch (e) {
-        console.error('Failed to restore cart from localStorage', e);
-      }
-    }
-    setLoading(false);
-  }, []);
-
-  // Persist cart to localStorage whenever it changes
-  useEffect(() => {
-    if (!loading) {
-      localStorage.setItem('cart', JSON.stringify(cartItems));
-    }
-  }, [cartItems, loading]);
 
   // Add item to cart or increase quantity if already exists
   const addToCart = (product) => {
@@ -55,8 +34,11 @@ export const CartProvider = ({ children }) => {
 
   // Update item quantity
   const updateQuantity = (productId, quantity) => {
-    // Ensure quantity never goes below 0
-    if (quantity < 0) return;
+    // Remove item if quantity is 0
+    if (quantity <= 0) {
+      removeFromCart(productId);
+      return;
+    }
 
     setCartItems((prevItems) =>
       prevItems.map((item) =>
@@ -78,13 +60,15 @@ export const CartProvider = ({ children }) => {
 
   // Decrease quantity of an item
   const decreaseQuantity = (productId) => {
-    setCartItems((prevItems) =>
-      prevItems.map((item) =>
-        item.id === productId && item.quantity > 0
-          ? { ...item, quantity: item.quantity - 1 }
-          : item
-      )
-    );
+    setCartItems((prevItems) => {
+      return prevItems
+        .map((item) =>
+          item.id === productId && item.quantity > 1
+            ? { ...item, quantity: item.quantity - 1 }
+            : item
+        )
+        .filter((item) => item.quantity > 0);
+    });
   };
 
   // Calculate total cart price
@@ -104,26 +88,45 @@ export const CartProvider = ({ children }) => {
     setCartItems([]);
   };
 
-  // Checkout simulation
-  const checkout = () => {
+  // Prepare cart for checkout and send to backend
+  const submitCheckout = async (backendUrl = '/api/orders') => {
     if (cartItems.length === 0) {
-      alert('Cart is empty!');
-      return false;
+      throw new Error('Cart is empty');
     }
 
-    const total = calculateTotal();
-    console.log('🛒 Checkout Summary:');
-    console.log('Items:', cartItems);
-    console.log('Total: $' + total.toFixed(2));
-    console.log('Checkout completed!');
+    const orderData = {
+      items: cartItems.map(({ id, title, price, quantity }) => ({
+        productId: id,
+        productName: title,
+        price,
+        quantity
+      })),
+      total: calculateTotal(),
+      timestamp: new Date().toISOString()
+    };
 
-    alert(
-      `Checkout successful!\nTotal: $${total.toFixed(
-        2
-      )}\n\nItems purchased: ${cartItems.length}`
-    );
-    clearCart();
-    return true;
+    try {
+      const response = await fetch(backendUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(orderData)
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to submit order');
+      }
+
+      const result = await response.json();
+      
+      // Only clear cart after successful backend submission
+      clearCart();
+      return result;
+    } catch (error) {
+      console.error('Checkout error:', error);
+      throw error;
+    }
   };
 
   const value = {
@@ -136,7 +139,7 @@ export const CartProvider = ({ children }) => {
     calculateTotal,
     getTotalItemCount,
     clearCart,
-    checkout
+    submitCheckout
   };
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;

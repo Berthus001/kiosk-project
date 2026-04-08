@@ -4,7 +4,7 @@ import { AuthContext } from '../context/AuthContext';
 import { CartContext } from '../context/CartContext';
 import '../styles/navbar.css';
 
-const Navbar = () => {
+const Navbar = ({ onCartClick }) => {
   const { user, logout } = useContext(AuthContext);
   const { getTotalItemCount } = useContext(CartContext);
   const navigate = useNavigate();
@@ -15,6 +15,12 @@ const Navbar = () => {
   };
 
   const cartCount = getTotalItemCount();
+
+  const handleCartClick = () => {
+    if (onCartClick) {
+      onCartClick();
+    }
+  };
 
   return (
     <nav className="navbar">
@@ -32,10 +38,15 @@ const Navbar = () => {
           )}
 
           {user?.role === 'user' && (
-            <div className="cart-badge">
+            <button
+              className="cart-badge"
+              onClick={handleCartClick}
+              title="Open cart"
+              aria-label={`Cart with ${cartCount} items`}
+            >
               <span className="cart-count">{cartCount}</span>
               🛒
-            </div>
+            </button>
           )}
 
           <button onClick={handleLogout} className="logout-btn">
