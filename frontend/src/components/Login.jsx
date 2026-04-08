@@ -1,5 +1,5 @@
 import React, { useState, useContext } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import '../styles/login.css';
 
@@ -77,6 +77,13 @@ const Login = () => {
           <p>
             <strong>User:</strong> user / user123
           </p>
+        </div>
+
+        <div className="login-footer">
+          <p>Don't have an account?</p>
+          <Link to="/signup" className="signup-link">
+            Sign up here
+          </Link>
         </div>
       </div>
     </div>
