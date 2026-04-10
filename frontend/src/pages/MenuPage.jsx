@@ -34,13 +34,17 @@ const MenuPage = () => {
 
         const data = await response.json();
 
-        // Validate we have an array
-        if (!Array.isArray(data)) {
-          throw new Error('API did not return an array of products');
+        console.log("API RESPONSE:", data);
+
+        // extract products safely
+        const productsArray = data.data || data.products || data;
+
+        if (!Array.isArray(productsArray)) {
+          throw new Error('API did not return a valid products array');
         }
 
-        setProducts(data);
-        setFilteredProducts(data);
+        setProducts(productsArray);
+        setFilteredProducts(productsArray);
       } catch (err) {
         setError(err.message || 'Failed to fetch products');
         console.error('Products fetch error:', err);
@@ -143,6 +147,7 @@ const MenuPage = () => {
 
             <div className="products-grid">
               {filteredProducts.map((product) => (
+                // <ProductCard key={product._id || product.id} product={product} />
                 <ProductCard
                   key={product.id}
                   product={product}

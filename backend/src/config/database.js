@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 
 export const connectDB = async () => {
   try {
-    const conn = await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/kiosk_db', {
+    const conn = await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/db_kiosk', {
       useNewUrlParser: true,
       useUnifiedTopology: true,
     });
