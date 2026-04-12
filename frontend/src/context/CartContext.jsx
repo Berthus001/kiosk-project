@@ -1,13 +1,38 @@
-import React, { createContext, useState } from 'react';
+import React, { createContext, useState, useEffect } from 'react';
 
 // Create cart context
 export const CartContext = createContext();
 
+const CART_STORAGE_KEY = 'kiosk_cart_items';
+
 export const CartProvider = ({ children }) => {
-  const [cartItems, setCartItems] = useState([]);
+  // Initialize cart from localStorage
+  const [cartItems, setCartItems] = useState(() => {
+    try {
+      const savedCart = localStorage.getItem(CART_STORAGE_KEY);
+      return savedCart ? JSON.parse(savedCart) : [];
+    } catch (err) {
+      console.error('Failed to load cart from localStorage:', err);
+      return [];
+    }
+  });
+
+  // Save cart to localStorage whenever it changes
+  useEffect(() => {
+    try {
+      localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cartItems));
+    } catch (err) {
+      console.error('Failed to save cart to localStorage:', err);
+    }
+  }, [cartItems]);
 
   // Add item to cart or increase quantity if already exists
   const addToCart = (product) => {
+    if (!product || !product.id) {
+      console.error('Invalid product:', product);
+      return;
+    }
+
     setCartItems((prevItems) => {
       const existingItem = prevItems.find((item) => item.id === product.id);
 
@@ -74,7 +99,8 @@ export const CartProvider = ({ children }) => {
   // Calculate total cart price
   const calculateTotal = () => {
     return cartItems.reduce((total, item) => {
-      return total + item.price * item.quantity;
+      const itemPrice = parseFloat(item.price) || 0;
+      return total + itemPrice * item.quantity;
     }, 0);
   };
 
@@ -88,45 +114,14 @@ export const CartProvider = ({ children }) => {
     setCartItems([]);
   };
 
-  // Prepare cart for checkout and send to backend
-  const submitCheckout = async (backendUrl = '/api/orders') => {
-    if (cartItems.length === 0) {
-      throw new Error('Cart is empty');
-    }
-
-    const orderData = {
-      items: cartItems.map(({ id, title, price, quantity }) => ({
-        productId: id,
-        productName: title,
-        price,
-        quantity
-      })),
+  // Export cart data (for viewing or future backend integration)
+  const getCartData = () => {
+    return {
+      items: cartItems,
       total: calculateTotal(),
+      itemCount: getTotalItemCount(),
       timestamp: new Date().toISOString()
     };
-
-    try {
-      const response = await fetch(backendUrl, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(orderData)
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to submit order');
-      }
-
-      const result = await response.json();
-      
-      // Only clear cart after successful backend submission
-      clearCart();
-      return result;
-    } catch (error) {
-      console.error('Checkout error:', error);
-      throw error;
-    }
   };
 
   const value = {
@@ -139,7 +134,7 @@ export const CartProvider = ({ children }) => {
     calculateTotal,
     getTotalItemCount,
     clearCart,
-    submitCheckout
+    getCartData
   };
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;

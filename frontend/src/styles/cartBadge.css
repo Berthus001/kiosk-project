@@ -1,0 +1,60 @@
+/* Cart Badge Styles */
+.cart-badge {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  background-color: #667eea;
+  color: white;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-weight: 600;
+  font-size: 14px;
+  animation: badge-pop 0.3s ease;
+}
+
+.badge-icon {
+  font-size: 16px;
+}
+
+.badge-count {
+  display: inline-block;
+  min-width: 18px;
+  text-align: center;
+}
+
+@keyframes badge-pop {
+  0% {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* Highlight badge when items added */
+.cart-badge.updated {
+  animation: badge-pulse 0.5s ease;
+}
+
+@keyframes badge-pulse {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(102, 126, 234, 0.7);
+  }
+  50% {
+    box-shadow: 0 0 0 8px rgba(102, 126, 234, 0);
+  }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .cart-badge {
+    padding: 3px 8px;
+    font-size: 12px;
+  }
+
+  .badge-icon {
+    font-size: 14px;
+  }
+}

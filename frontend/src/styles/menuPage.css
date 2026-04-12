@@ -18,12 +18,15 @@
   position: sticky;
   top: 0;
   z-index: 100;
+  gap: 20px;
 }
 
 .menu-header h1 {
   margin: 0;
   font-size: 2rem;
   font-weight: 700;
+  flex: 1;
+  text-align: center;
 }
 
 .back-btn {
@@ -41,6 +44,47 @@
 .back-btn:hover {
   background: rgba(255, 255, 255, 0.3);
   transform: translateX(-5px);
+}
+
+/* Cart Button in Menu Header */
+.menu-cart-btn {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 25px;
+  cursor: pointer;
+  font-size: 1.2rem;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  position: relative;
+}
+
+.menu-cart-btn:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: scale(1.05);
+}
+
+.cart-badge-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 20px;
+  height: 20px;
+  background: #ff6b6b;
+  color: white;
+  border-radius: 50%;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+/* Hide badge if count is 0 */
+.menu-cart-btn .cart-badge-count:has-text-only:empty,
+.cart-badge-count:contains("0") ~ * {
+  display: none;
 }
 
 /* Loading State */
@@ -191,45 +235,62 @@
 /* Responsive Design */
 @media (max-width: 768px) {
   .menu-header {
-    padding: 20px;
-    flex-direction: column;
-    gap: 15px;
+    padding: 15px 10px;
+    flex-direction: row;
+    gap: 10px;
   }
 
   .menu-header h1 {
-    font-size: 1.5rem;
+    font-size: 1.3rem;
+    text-align: center;
+  }
+
+  .back-btn,
+  .menu-cart-btn {
+    padding: 8px 12px;
+    font-size: 0.9rem;
+  }
+
+  .cart-badge-count {
+    min-width: 18px;
+    height: 18px;
+    font-size: 0.7rem;
   }
 
   .products-grid {
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
     gap: 20px;
   }
-
-  .section-title {
-    font-size: 1.5rem;
-  }
 }
 
 @media (max-width: 480px) {
   .menu-header {
-    padding: 15px;
+    padding: 10px;
+    gap: 8px;
   }
 
   .menu-header h1 {
-    font-size: 1.3rem;
+    font-size: 1.1rem;
   }
 
-  .menu-main {
-    padding: 20px 15px;
+  .back-btn,
+  .menu-cart-btn {
+    padding: 6px 10px;
+    font-size: 0.8rem;
+  }
+
+  .cart-badge-count {
+    min-width: 16px;
+    height: 16px;
+    font-size: 0.65rem;
   }
 
   .products-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
     gap: 15px;
   }
 
   .section-title {
-    font-size: 1.3rem;
-    margin-bottom: 20px;
+    font-size: 1.5rem;
   }
 }

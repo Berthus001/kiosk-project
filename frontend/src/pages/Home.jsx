@@ -1,22 +1,40 @@
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState } from 'react';
+import Navbar from '../components/Navbar';
+import DynamicProductSection from '../components/DynamicProductSection';
+import CartSidebar from '../components/CartSidebar';
+import '../styles/home.css';
 
-// Deprecated: Use LandingPage instead
 const Home = () => {
-  const navigate = useNavigate();
+  const [isCartOpen, setIsCartOpen] = useState(false);
 
-  React.useEffect(() => {
-    navigate('/');
-  }, [navigate]);
+  return (
+    <div className="home-page">
+      {/* Static Navbar - Always loaded, never changes */}
+      <Navbar onCartClick={() => setIsCartOpen(true)} />
 
-  return null;
-};
+      {/* Static Hero Section */}
+      <section className="hero-section">
+        <div className="hero-content">
+          <h1 className="hero-title">Welcome to Our Kiosk</h1>
+          <p className="hero-subtitle">Discover our delicious menu items</p>
+        </div>
+      </section>
 
-export default Home;
+      {/* ONLY Dynamic Section - Fetches products from API */}
+      <main className="home-main">
+        <DynamicProductSection />
+      </main>
 
-          }}
-        />
-      )}
+      {/* Cart Sidebar */}
+      <CartSidebar 
+        isOpen={isCartOpen} 
+        onClose={() => setIsCartOpen(false)} 
+      />
+
+      {/* Static Footer */}
+      <footer className="footer">
+        <p>&copy; 2026 Kiosk System. All rights reserved.</p>
+      </footer>
     </div>
   );
 };

@@ -102,6 +102,75 @@
   font-size: 18px;
 }
 
+/* Product Section Styles */
+.products-section {
+  margin: 40px 0;
+}
+
+.section-title {
+  font-size: 28px;
+  color: #2c3e50;
+  margin: 0 0 30px 0;
+  text-align: center;
+  font-weight: 700;
+}
+
+/* Loading state - only for product section */
+.product-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  gap: 20px;
+}
+
+.product-loading .spinner {
+  width: 50px;
+  height: 50px;
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #3498db;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+.product-loading p {
+  font-size: 16px;
+  color: #666;
+  margin: 0;
+}
+
+/* Error state - only for product section */
+.product-error {
+  padding: 40px 20px;
+  text-align: center;
+  background-color: #ffe6e6;
+  border: 2px solid #ff6b6b;
+  border-radius: 8px;
+  margin: 20px 0;
+}
+
+.product-error p {
+  color: #c92a2a;
+  margin: 0 0 15px 0;
+  font-size: 14px;
+}
+
+.retry-btn {
+  padding: 10px 20px;
+  background-color: #ff6b6b;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.2s;
+}
+
+.retry-btn:hover {
+  background-color: #d63031;
+}
+
 /* Responsive for tablets and smaller */
 @media (max-width: 768px) {
   .product-grid-container {
